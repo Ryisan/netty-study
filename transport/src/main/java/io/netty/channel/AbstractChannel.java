@@ -505,6 +505,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
+                //将channel 注册到 selector
                 doRegister();
                 neverRegistered = false;
                 registered = true;
@@ -1072,7 +1073,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
 
     /**
      * Is called after the {@link Channel} is registered with its {@link EventLoop} as part of the register process.
-     *
+     *  在channel作为注册过程的一部分注册到其EventLoop后调用
      * Sub-classes may override this method
      */
     protected void doRegister() throws Exception {

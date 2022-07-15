@@ -307,7 +307,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            //根据应用传进的channel类型(NioSocketChannel)创建一个channel
             channel = channelFactory.newChannel();
+            //初始化接收处理器
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -320,6 +322,8 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        //将channel注册到 EventLoopGroup
+        // 调用 MultithreadEventLoopGroup.register(channel)
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {
@@ -349,6 +353,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
         // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
         // the pipeline in its channelRegistered() implementation.
+        // 线程池处理i/o 事件，绑定channel
         channel.eventLoop().execute(new Runnable() {
             @Override
             public void run() {

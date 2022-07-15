@@ -833,8 +833,10 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     private void execute(Runnable task, boolean immediate) {
         boolean inEventLoop = inEventLoop();
+        //添加任务
         addTask(task);
         if (!inEventLoop) {
+            //开启执行线程
             startThread();
             if (isShutdown()) {
                 boolean reject = false;
@@ -994,6 +996,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                 boolean success = false;
                 updateLastExecutionTime();
                 try {
+                    //执行任务
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {

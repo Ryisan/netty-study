@@ -38,6 +38,7 @@ public abstract class MultithreadEventLoopGroup extends MultithreadEventExecutor
 
     static {
         DEFAULT_EVENT_LOOP_THREADS = Math.max(1, SystemPropertyUtil.getInt(
+                //默认线程数 = cpu * 2
                 "io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2));
 
         if (logger.isDebugEnabled()) {
@@ -88,6 +89,8 @@ public abstract class MultithreadEventLoopGroup extends MultithreadEventExecutor
 
     @Override
     public ChannelFuture register(ChannelPromise promise) {
+        //NioEventLoop extends SingleThreadEventLoop
+        //调用 SingleThreadEventLoop.register(promise)
         return next().register(promise);
     }
 

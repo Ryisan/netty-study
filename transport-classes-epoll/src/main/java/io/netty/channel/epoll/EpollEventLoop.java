@@ -382,6 +382,7 @@ class EpollEventLoop extends SingleThreadEventLoop {
                 } else if (strategy > 0) {
                     final long ioStartTime = System.nanoTime();
                     try {
+                        //处理 i/o 就绪事件
                         if (processReady(events, strategy)) {
                             prevDeadlineNanos = NONE;
                         }
@@ -452,6 +453,7 @@ class EpollEventLoop extends SingleThreadEventLoop {
             if (fd == eventFd.intValue()) {
                 pendingWakeup = false;
             } else if (fd == timerFd.intValue()) {
+                //已就绪
                 timerFired = true;
             } else {
                 final long ev = events.events(i);

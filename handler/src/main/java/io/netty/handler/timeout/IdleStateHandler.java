@@ -486,8 +486,11 @@ public class IdleStateHandler extends ChannelDuplexHandler {
 
         @Override
         protected void run(ChannelHandlerContext ctx) {
+            //设置的超时时间
             long nextDelay = readerIdleTimeNanos;
             if (!reading) {
+                //ticksInNanos() - lastReadTime = 当前时间 - 上一次读取时间，假设为 6 秒
+                //假设 nextDelay 设置 5秒，则 nextDelay -= ticksInNanos() - lastReadTime = -1
                 nextDelay -= ticksInNanos() - lastReadTime;
             }
 
@@ -500,6 +503,7 @@ public class IdleStateHandler extends ChannelDuplexHandler {
 
                 try {
                     IdleStateEvent event = newIdleStateEvent(IdleState.READER_IDLE, first);
+                    //如果超时了，触发 fireUserEventTriggered
                     channelIdle(ctx, event);
                 } catch (Throwable t) {
                     ctx.fireExceptionCaught(t);
